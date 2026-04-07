@@ -1,0 +1,29 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model motorista {
+  id        String   @id @default(uuid())
+  nome      String
+  documento String   @unique
+  veiculo   veiculo?
+
+  @@index([nome])
+  @@index([documento])
+}
+
+model veiculo {
+  id          String    @id @default(uuid())
+  placa       String    @unique
+  marca       String
+  modelo      String
+  ano         String
+  motoristaId String    @unique
+  motorista   motorista @relation(fields: [motoristaId], references: [id], onDelete: Cascade)
+
+  @@index([placa])
+}
