@@ -45,7 +45,9 @@ export class UserService {
     static async findUnique(id: string): Promise<MotoristaComVeiculo | null> {
         try {
             const user = await prisma.motorista.findUnique({
-                where: { id },
+                where: {
+                    id: parseInt(id)
+                },
                 include: { veiculo: true },
             });
             return user;
@@ -60,17 +62,15 @@ export class UserService {
             const { nome, documento, placa, marca, modelo, ano } = dados;
 
             const user = await prisma.motorista.update({
-                where: { 
-                    id
-                 },
+                where: {
+                    id: parseInt(id)
+                },
                 data: {
                     nome,
                     documento,
-                    veiculo: placa
-                        ? {
-                            update: { placa, marca, modelo, ano },
-                        }
-                        : undefined,
+                    veiculo: {
+                        ...(placa && { update: { placa, marca, modelo, ano }, })
+                    }
                 },
                 include: { veiculo: true },
             });
@@ -85,7 +85,9 @@ export class UserService {
     static async delete(id: string): Promise<MotoristaComVeiculo> {
         try {
             const user = await prisma.motorista.delete({
-                where: { id },
+                where: {
+                    id: parseInt(id)
+                },
                 include: { veiculo: true },
             });
             return user;
